@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-
+const Campground = require('./modules/campground');
 
 
 
@@ -28,4 +28,12 @@ app.listen(3000, ()=>console.log('listening on port 3000'));
 
 
 // testing the app
-app.get('*', (req, res)=> res.render('home'));
+app.get('/creat', async (req, res) => {
+    const camp = new Campground({
+        title: "Test camp"
+    });
+    await camp.save()
+    res.send(camp);
+});
+
+app.get('*', (req, res) => res.render('home'));
