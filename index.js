@@ -1,8 +1,10 @@
 const express = require('express');
 const path = require('path');
+const ejsMate = require('ejs-mate');
 const mongoose = require('mongoose');
 const Campground = require('./modules/campground');
 const methodOverride = require('method-override');
+const bodyParser = require('body-parser');
 
 
 
@@ -18,10 +20,14 @@ mongoose.connection.once('open', ()=>console.log("Connected to Mongo successfull
 
 // middlewares
 const app = express();
+app.engine('ejs', ejsMate);
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
 app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 // creating the server on pot 3000
 app.listen(3000, ()=>console.log('listening on port 3000'));
