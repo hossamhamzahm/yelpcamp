@@ -5,7 +5,9 @@ const mongoose = require('mongoose');
 const Campground = require('./modules/campground');
 const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
-
+const ExpressError = require('./utils/ExpressError');
+const catchAsync = require('./utils/catchAsync');
+const {campgroundSchema} = require('./schemas');
 
 
 // connecting to mongo on yelp-camp2
@@ -29,47 +31,72 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// creating the server on pot 3000
-app.listen(3000, ()=>console.log('listening on port 3000'));
+
+const validateCampground = (req, res, next)=>{
+    
+
+    const { error } = campgroundSchema.validate(req.body);
+    if (error) {
+        const msg = error.details.map(el => el.message).join(',');
+        throw new ExpressError(msg, 400);
+    }
+    else{
+        next();
+    }
+};
+
 
 
 // Campground routes
-app.get('/campgrounds', async (req, res) => {
+app.get('/campgrounds', catchAsync(async(req, res) => {
     const campgrounds = await Campground.find({});
     res.render('campgrounds/index', {campgrounds});
-});
+}));
 
 app.get('/campgrounds/new', (req, res)=>{
     res.render('campgrounds/new');
 })
 
-app.get('/campgrounds/:id', async (req, res) => {
+app.get('/campgrounds/:id', catchAsync(async(req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/show', { campground });
-})
+}));
 
-app.get('/campgrounds/:id/edit', async (req, res) => {
+app.get('/campgrounds/:id/edit', catchAsync(async(req, res) => {
     const campground = await Campground.findById(req.params.id);
     res.render('campgrounds/edit', { campground });
-})
+}));
 
-app.post('/campgrounds', async(req, res)=>{
-    const campground = new Campground({
-        title : req.body.campground.title,
-        location : req.body.campground.location
-    }) ;
+app.post('/campgrounds', validateCampground, catchAsync(async(req, res)=>{
+
+    const campground = new Campground(req.body.campground) ;
     await campground.save();
-    res.redirect('/campgrounds');
-})
+    res.redirect(`/campgrounds/${campground.id}`);
+}));
 
-app.put('/campgrounds/:id', async (req, res) => {
+app.put('/campgrounds/:id', validateCampground, catchAsync(async(req, res) => {
     const campground = await Campground.findByIdAndUpdate(req.params.id, { ...req.body.campground });
     res.redirect(`/campgrounds/${req.params.id}`);
-})
+}));
 
-app.delete('/campgrounds/:id', async (req, res) => {
+app.delete('/campgrounds/:id', catchAsync(async(req, res) => {
     await Campground.findByIdAndDelete(req.params.id);
     res.redirect(`/campgrounds`);
-})
+}));
 
-app.get('*', (req, res) => res.render('home'));
+
+// If nothing is matched, respond with 404
+app.all('*', (req, res, next) => {
+    return next(new ExpressError("Page Not Found", 404));
+});
+
+
+// Error handler:
+app.use((error, req, res, next)=>{
+    const {status=500, message="Internal Server Error"} = error;
+    res.status(status).render('error', {error});
+});
+
+
+// creating the server on pot 3000
+app.listen(3000, () => console.log('listening on port 3000'));
