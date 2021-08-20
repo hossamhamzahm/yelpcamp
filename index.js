@@ -9,6 +9,11 @@ const campgroundRouter = require('./routes/campgrounds');
 const reviewRouter = require('./routes/reviews');
 const session = require('express-session');
 const flash = require('express-flash');
+const passport = require('passport');
+const localStrategy = require('passport-local');
+const User = require('./modules/users');
+const userRouter = require('./routes/users');
+
 
 
 // connecting to mongo on yelp-camp2
@@ -43,14 +48,24 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+// using passport for authentication
+// remember, u have to use session before start using passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.use((req, res, next)=>{
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
 });
 
-
+// user routes
+app.use('/', userRouter)
 // campground routes
 app.use('/campgrounds', campgroundRouter);
 // review routes
@@ -70,5 +85,5 @@ app.use((error, req, res, next)=>{
 });
 
 
-// creating the server on pot 3000
+// creating the server on port 3000
 app.listen(3000, () => console.log('listening on port 3000'));
