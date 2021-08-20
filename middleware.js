@@ -26,9 +26,9 @@ module.exports.validateCampground = (req, res, next) => {
 
 module.exports.isAuthor = catchAsync(async (req, res, next) => {
     const campground = await Campground.findById(req.params.id);
-    if (campground.author != req.user._id) {
+    if (toString(campground.author) !== toString(req.user._id)) {
         req.flash('error', "You don't have permission to do that!");
-        res.redirect(`/campgrounds/${campground.id}`);
+        return res.redirect(`/campgrounds/${campground.id}`);
     }
     next();
 });
@@ -46,9 +46,9 @@ module.exports.validateReview = (req, res, next) => {
 
 module.exports.isReviewAuthor = catchAsync(async (req, res, next) => {
     const review = await Review.findById(req.params.reviewId);
-    if (review.author != req.user._id) {
+    if (toString(review.author) !== toString(req.user._id)) {
         req.flash('error', "You don't have permission to do that!");
-        res.redirect(`/campgrounds/${campground.id}`);
+        return res.redirect(`/campgrounds/${req.params.id}`);
     }
     next();
 });
