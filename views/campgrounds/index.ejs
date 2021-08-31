@@ -3,22 +3,10 @@
 <h1>All Campgrounds</h1>
 <div class="d-flex flex-column">
     <% for(let camp of campgrounds){ %>
-        <div class="d-flex row flex-row">
-            <div class="d-flex flex-column col-md-4">
-            </div>
-            <div class="d-flex flex-column col-md-8">
-                <h1>
-                    
-                </h1>
-                
-            </div>
-        </div>
-
-
         <div class="card mb-3">
             <div class="row g-0">
                 <div class="col-md-4">
-                    <img src="<%= camp.image %>" class="img-fluid rounded-start" alt="...">
+                    <img src="<%= camp.images[0].thumbnail %>" class="img-fluid rounded-start" alt="...">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">

@@ -1,12 +1,34 @@
 <% layout('layouts/boilerplate') %>
 <link rel="stylesheet" href="/css/star_basic.css">
 
+<script>
+    const mapToken = "<%-process.env.MAPBOX_TOKEN%>";
+    const coordinate = <%- JSON.stringify(campground.geometry.coordinates) %>;
+</script>
 
 <div class="container d-flex row">
     <div class="mx-auto col-md-9 col-lg-6">
-    
         <div class="card mb-3">
-            <img src="<%= campground.image %>" class="card-img-top img-fluid" alt="...">
+            <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <% campground.images.forEach((img, idx)=> { %>
+                    <div class="carousel-item <%= idx===0 ? "active" : "" %>">
+                        <img src="<%= img.url %>" class="d-block w-100" alt="...">
+                    </div>
+                    <% }) %>
+                </div>
+                <% if(campground.images.length>1){ %>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                <% } %>  
+            </div>
+
             <div class="card-body">
                 <h5 class="card-title">
                     <%= campground.title %>
@@ -37,7 +59,8 @@
         </div>
     </div>
 
-    <div class="my-3 mx-auto col-md-9 col-lg-6">    
+    <div class="mb-3 mx-auto col-md-9 col-lg-6">  
+            <div id='map' class="" style='height: 300px;'></div>
             <div class="m-3">
                 <% if(currentUser){ %> 
                 <h5 class="display-6">
@@ -91,3 +114,6 @@
             </div>
     </div>
 </div>
+
+
+<script src="/js/showPageMap.js"> </script>

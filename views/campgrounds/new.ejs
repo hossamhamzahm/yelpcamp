@@ -3,7 +3,7 @@
 <div class="container d-flex row">
     <div class="mx-auto col-md-9 col-lg-6">
         <h1 class="display-6 text-center">New Campground</h1>
-        <form class="needs-validation border rounded-3 p-4 my-5" action="/campgrounds" method="POST" novalidate>
+        <form class="needs-validation border rounded-3 p-4 my-5" action="/campgrounds" method="POST" enctype="multipart/form-data" novalidate>
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" name="campground[title]" required>
@@ -26,7 +26,7 @@
             </div>
             <div class="mb-3">
                 <label for="image" class="form-label">Image URL</label>
-                <input type="text" class="form-control" id="image" name="campground[image]" required>
+                <input type="file" class="form-control" id="image" name="image" required multiple>
                 <div class="valid-feedback">
                     Looks good!
                 </div>
