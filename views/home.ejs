@@ -1,3 +1,71 @@
-<% layout('layouts/boilerplate') %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YelpCamp</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
 
-<h1>Welcome from Ejs</h1>
+    <style>
+        body{
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("https://images.unsplash.com/photo-1559521783-1d1599583485?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1950&q=80");
+            background-size: cover;
+            background-repeat: no-repeat;
+            min-height: 100vh;
+        }
+
+        .nav-item:hover{
+            border-bottom: 1px solid #FFF;
+        }
+    </style>
+</head>
+<body class="d-flex flex-column">
+    <nav class="navbar navbar-expand-lg .bg-transparent navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">YelpCamp</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
+                aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarScroll">
+                <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/campgrounds">Campgrounds</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/campgrounds/new">New</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto my-2 my-lg-0 navbar-nav-scroll">
+                    <% if(!currentUser){ %>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="/login">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register">Register</a>
+                        </li>
+                        <% }else{ %>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout">Logout</a>
+                            </li>
+                            <% } %>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="my-auto align-self-center text-center container">
+        <h3 class="display-6 text-light">YelpCamp</h3>
+        <p class="text-light">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste, nesciunt magnam! Neque ab maxime, optio id eos architecto debitis tenetur pariatur tempore praesentium a totam nesciunt minus atque magnam illo.
+        </p>
+        <a href="/campgrounds" class="btn btn-light">View Campgrounds</a>
+    </main>
+
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
