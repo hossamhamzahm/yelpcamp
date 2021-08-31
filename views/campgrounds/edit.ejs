@@ -4,7 +4,7 @@
 <div class="container d-flex row">
     <div class="mx-auto col-md-9 col-lg-6">
         <h1 class="display-6 text-center">Edit <%= campground.title %></h1>
-        <form class="needs-validation border rounded-3 p-4 my-5" action="/campgrounds/<%=campground.id%>?_method=PUT" method="POST" novalidate>
+        <form class="needs-validation border rounded-3 p-4 my-5" action="/campgrounds/<%=campground.id%>?_method=PUT" method="POST" enctype="multipart/form-data" novalidate>
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" class="form-control" id="title" name="campground[title]" value="<%= campground.title %>" required>
@@ -26,8 +26,15 @@
                 </div>
             </div>
             <div class="mb-3">
-                <label for="image" class="form-label">Image URL</label>
-                <input type="text" class="form-control" id="image" name="campground[image]" value="<%= campground.image %>" required>
+                <label for="image" class="form-label">Image(S)</label>
+                <div class="custom-file">
+                    <input id="image" name="image" type="file" multiple class="form-control" multiple>
+                    <label class="m-1 custom-file-label" for="image">
+                        <span class="d-inline-block text-muted">Choose file(s)</span>
+                    </label>
+                </div>
+
+
                 <div class="valid-feedback">
                     Looks good!
                 </div>
@@ -59,6 +66,24 @@
                         You must enter the location of the campground
                     </div>
             </div>
+
+            <% if(campground.images.length){ %>
+                <h1 class="lead mt-5">Campground Images</h1>
+                <div class="d-flex row my-3">
+                    <% campground.images.forEach((img, idx)=>{ %>
+                        <div class="col-lg-6 mb-3">
+                            <div class="card mx-auto">
+                                <div class="card-body">
+                                    <label for="image-<%= idx %> " class="text-center">Delete </label>
+                                    <input class="me-0" type="checkbox" name="deleteImages[]" id="image-<%= idx %>" class="form-check-input "
+                                    value="<%= img.filename %>">
+                                </div>
+                                <img src="<%= img.thumbnail %> " class="card-img-top" alt="">
+                            </div>
+                        </div>
+                        <% }) %>
+                </div>
+            <% } %>  
 
             <button type="submit" class="btn btn-info">Update campground</button>
             <p class="pt-2">
