@@ -19,10 +19,14 @@ const User = require('./modules/users');
 const userRouter = require('./routes/users');
 const mongoSanitize = require("express-mongo-sanitize");
 const helmet = require('helmet');
+const MongoStore = new require("connect-mongo");
+
+
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/yelp-camp2';
 
 
 // connecting to mongo on yelp-camp2
-mongoose.connect('mongodb://localhost:27017/yelp-camp2', { 
+mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -85,20 +89,35 @@ app.use(
 );
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+const secret = process.env.SECRET || 'thisshouldbeabettersecret';
+
+const store = MongoStore.create({
+    mongoUrl: dbUrl,
+    secret: secret,
+    touchAfter: 24 * 3600,
+});
+store.on('error', (e)=> console.log("Session Error:", e));
+
+
 const sessionConfig = {
     // name: 'blah',
-    secret: 'thisshouldbeabettersecret',
+    store: store,
+    secret: secret,
     resave: false,
     saveUninitialized: true,
     cookie: {
         httpOnly: true,
-        // secure: true,
+        secure: true,
         expires: Date.now() + 1000*60*60*24*7,
         maxAge: 1000 * 60 * 60 * 24 * 7,
     }
 }
+
+
 app.use(session(sessionConfig));
 app.use(flash());
+
 
 // using passport for authentication
 // remember, u have to use session before start using passport
